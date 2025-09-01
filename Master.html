@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Awareness & Detection Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0e1a;
+            --panel-bg: rgba(22, 28, 49, 0.6);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --primary-accent: #00aaff;
+            --danger-accent: #ff4757;
+            --safe-accent: #2ed573;
+            --warning-accent: #ffa502;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: #d1d5db;
+            overflow: hidden;
+        }
+        .font-code { font-family: 'Source Code Pro', monospace; }
+
+        /* --- Page Transitions --- */
+        .page {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            animation: fadeIn 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .page.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Glass Panel & UI Elements --- */
+        .glass-panel {
+            background-color: var(--panel-bg);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 1.25rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .btn {
+            position: relative; overflow: hidden;
+            transition: all 0.3s ease;
+            transform: perspective(1px) translateZ(0);
+        }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 0 20px -5px currentColor; }
+        .btn::before {
+            content: ''; position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.8s ease;
+        }
+        .btn:hover::before { left: 100%; }
+
+        /* --- Phishing Page Specific Styles --- */
+        .fake-browser-bar {
+            background-color: rgba(0,0,0,0.2);
+            padding: 0.75rem;
+            border-top-left-radius: 1.25rem;
+            border-top-right-radius: 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .url-bar {
+            background-color: #0e1320;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #d1d5db;
+        }
+        .url-bar .secure { color: var(--safe-accent); }
+        .url-bar .domain { color: #f1f2f6; font-weight: 500; }
+        .url-bar .suspicious { color: var(--warning-accent); text-decoration: underline; text-decoration-style: wavy; }
+
+        /* --- Credential Theft Animation --- */
+        #theft-animation-overlay { z-index: 1000; }
+        .terminal-line { animation: type-in 1.5s steps(40, end); white-space: nowrap; overflow: hidden; }
+        @keyframes type-in { from { width: 0; } to { width: 100%; } }
+
+        /* --- Education Page Styles --- */
+        .red-flag-card {
+            border-left: 3px solid var(--danger-accent);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .red-flag-card:hover { background-color: rgba(255, 71, 87, 0.1); transform: translateY(-3px); }
+
+        /* --- Dashboard Styles --- */
+        .kpi-card { border-bottom: 3px solid; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .kpi-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        #compromise-chart {
+            width: 120px; height: 120px; border-radius: 50%;
+            display: grid; place-items: center;
+            transition: background 0.5s ease;
+        }
+        .table-row-new { animation: highlight-row 3s ease-out; }
+        @keyframes highlight-row {
+            0% { background-color: rgba(255, 71, 87, 0.3); }
+            100% { background-color: transparent; }
+        }
+
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <section id="phishing-page" class="page active flex-col items-center justify-center">
+        <div class="w-full max-w-lg glass-panel">
+            <div class="fake-browser-bar flex items-center gap-2">
+                <div class="flex gap-1.5">
+                    <span class="block w-3 h-3 bg-red-500 rounded-full"></span>
+                    <span class="block w-3 h-3 bg-yellow-500 rounded-full"></span>
+                    <span class="block w-3 h-3 bg-green-500 rounded-full"></span>
+                </div>
+                <div class="url-bar flex-grow rounded-full px-4 py-1.5 text-sm flex items-center gap-2 font-code">
+                    <svg class="w-4 h-4 secure" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd"></path></svg>
+                    <span>https://</span><span class="domain">nexus-corp.com</span><span>.</span><span class="suspicious">auth-login.net</span><span>/sso</span>
+                </div>
+            </div>
+            
+            <div class="p-8 sm:p-12">
+                <div class="flex flex-col items-center text-center">
+                     <svg class="w-16 h-16 text-cyan-400 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                     </svg>
+                    <h1 class="text-3xl font-bold text-white">Nexus Corp</h1>
+                    <p class="text-gray-400 mt-2">Action Required: Please sign in to verify your account and prevent suspension.</p>
+                </div>
+
+                <div class="mt-8 space-y-5">
+                    <input type="email" id="phish-email" class="w-full px-4 py-3 bg-gray-800/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent" placeholder="Enter your corporate email">
+                    <input type="password" id="phish-password" class="w-full px-4 py-3 bg-gray-800/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-accent" placeholder="Enter your password">
+                    <button id="phish-submit-btn" class="btn w-full py-3 px-4 font-bold text-white bg-primary-accent rounded-lg">Sign In Securely</button>
+                    <button id="report-btn" class="btn w-full py-2 px-4 font-medium text-gray-300 bg-gray-600/50 hover:bg-gray-600/80 rounded-lg">Report this Page</button>
+                </div>
+                <p class="text-xs text-center text-gray-500 mt-8">© 2025 Nexus Corperation. All Rights Reserved.</p>
+            </div>
+        </div>
+        <p class="text-center text-gray-500 mt-6 text-sm">This is a safe, interactive simulation to demonstrate phishing attacks.</p>
+    </section>
+
+    <section id="education-page" class="page flex-col items-center justify-center">
+        <div class="w-full max-w-4xl glass-panel p-8 sm:p-12">
+            <div class="text-center">
+                <svg class="w-16 h-16 text-danger-accent mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                <h1 class="text-4xl font-bold text-white mt-4">Simulation Complete: Attack Detected</h1>
+                <p class="text-gray-300 mt-2 text-lg max-w-2xl mx-auto">You just submitted your credentials to a phishing site. Let's break down the red flags you may have missed.</p>
+            </div>
+
+            <div class="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="red-flag-card p-5 bg-black/20 rounded-lg">
+                    <h3 class="font-bold text-lg text-white">Suspicious Domain</h3>
+                    <p class="text-gray-400 mt-1 text-sm">The real domain was <code class="font-code text-warning-accent">auth-login.net</code>, not <code class="font-code text-safe-accent">nexus-corp.com</code>. Attackers use subdomains to create convincing but fake URLs.</p>
+                </div>
+                <div class="red-flag-card p-5 bg-black/20 rounded-lg">
+                    <h3 class="font-bold text-lg text-white">Urgent & Threatening Language</h3>
+                    <p class="text-gray-400 mt-1 text-sm">Phrases like "Action Required" and "prevent suspension" create a false sense of urgency, pressuring you to act without thinking.</p>
+                </div>
+                 <div class="red-flag-card p-5 bg-black/20 rounded-lg">
+                    <h3 class="font-bold text-lg text-white">Spelling & Grammar Errors</h3>
+                    <p class="text-gray-400 mt-1 text-sm">The footer misspelled "Corporation" as <code class="font-code text-warning-accent">Corperation</code>. Professional companies rarely make such obvious mistakes.</p>
+                </div>
+            </div>
+
+            <div class="mt-10 text-center">
+                <h2 class="text-2xl font-semibold text-white">What Now?</h2>
+                <p class="text-gray-400 mt-2">In a real scenario, you would immediately change your password and report the incident to IT.<br>Let's see how this event looks from the attacker's perspective on the campaign dashboard.</p>
+                <button id="view-dashboard-btn" class="btn mt-6 py-3 px-8 font-bold text-white bg-cyan-600 hover:bg-cyan-700 rounded-lg">View Campaign Dashboard</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="dashboard-page" class="page flex-col items-center justify-center">
+        <div class="w-full max-w-6xl glass-panel p-8 sm:p-10">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-white">Phishing Campaign Dashboard</h1>
+                    <p class="text-gray-400 mt-1">Live results for "Q3 Account Verification" campaign.</p>
+                </div>
+                <button id="restart-sim-btn" class="btn mt-4 sm:mt-0 py-2 px-5 font-bold text-white bg-primary-accent rounded-lg">Run New Simulation</button>
+            </div>
+
+            <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="kpi-card bg-black/20 p-5 rounded-lg border-blue-500">
+                    <h3 class="text-gray-400 text-sm font-medium">Targeted Users</h3>
+                    <p id="kpi-total" class="text-3xl font-bold text-white mt-1">0</p>
+                </div>
+                <div class="kpi-card bg-black/20 p-5 rounded-lg border-yellow-500">
+                    <h3 class="text-gray-400 text-sm font-medium">Clicked Link</h3>
+                    <p id="kpi-clicked" class="text-3xl font-bold text-white mt-1">0</p>
+                </div>
+                <div class="kpi-card bg-black/20 p-5 rounded-lg border-danger-accent">
+                    <h3 class="text-gray-400 text-sm font-medium">Credentials Submitted</h3>
+                    <p id="kpi-compromised" class="text-3xl font-bold text-white mt-1">0</p>
+                </div>
+                <div class="kpi-card bg-black/20 p-5 rounded-lg border-safe-accent">
+                    <h3 class="text-gray-400 text-sm font-medium">Reported as Phishing</h3>
+                    <p id="kpi-reported" class="text-3xl font-bold text-white mt-1">0</p>
+                </div>
+            </div>
+
+            <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-black/20 p-5 rounded-lg">
+                    <h3 class="font-semibold text-white">Live Event Feed</h3>
+                    <div class="mt-4 max-h-80 overflow-y-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="sticky top-0 bg-black/40">
+                                <tr>
+                                    <th class="p-3 font-medium text-gray-400">User</th>
+                                    <th class="p-3 font-medium text-gray-400">Status</th>
+                                    <th class="p-3 font-medium text-gray-400">Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="events-table-body" class="divide-y divide-gray-700/50">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="bg-black/20 p-5 rounded-lg flex flex-col items-center justify-center">
+                    <h3 class="font-semibold text-white mb-4">Compromise Rate</h3>
+                    <div id="compromise-chart">
+                        <span id="compromise-rate-text" class="text-3xl font-bold text-white">0%</span>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-3 text-center">Percentage of targeted users who submitted credentials.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="theft-animation-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm items-center justify-center z-50 hidden">
+        <div class="font-code text-sm sm:text-base bg-[#0d1117] p-8 rounded-lg shadow-2xl max-w-2xl w-full border border-red-500/30">
+            <div class="flex items-center gap-3">
+                 <svg class="w-6 h-6 text-danger-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                <p class="text-red-400">[CONNECTION ESTABLISHED]... Bypassing security...</p>
+            </div>
+            <div class="mt-4 pl-9">
+                <p class="text-cyan-400 terminal-line">> EXFILTRATING DATA FROM FORM...</p>
+                <div class="mt-2 text-gray-300">
+                    <p><strong>Email:</strong> <span id="stolen-email"></span></p>
+                    <p><strong>Password:</strong> <span id="stolen-password"></span></p>
+                </div>
+                 <p class="text-green-400 mt-4">[SUCCESS] Credentials captured. Terminating connection.</p>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- STATE MANAGEMENT ---
+    let campaignUsers = [];
+    const TOTAL_USERS = 50; // Total users in the simulated campaign
+
+    const demoUsers = [
+        { email: 'sarah.j@nexus.corp', status: 'Clicked Link', time: '14:28:10' },
+        { email: 'mike.r@nexus.corp', status: 'Reported Safely', time: '14:25:50' },
+        { email: 'chen.l@nexus.corp', status: 'Credentials Submitted', time: '14:22:19' },
+        { email: 'anna.b@nexus.corp', status: 'Reported Safely', time: '14:21:05' },
+        { email: 'david.p@nexus.corp', status: 'Clicked Link', time: '14:19:43' },
+    ];
+    
+    // --- DOM ELEMENTS ---
+    const pages = document.querySelectorAll('.page');
+    const phishingPage = document.getElementById('phishing-page');
+    const educationPage = document.getElementById('education-page');
+    const dashboardPage = document.getElementById('dashboard-page');
+    
+    const phishEmailInput = document.getElementById('phish-email');
+    const phishPasswordInput = document.getElementById('phish-password');
+    const phishSubmitBtn = document.getElementById('phish-submit-btn');
+    const reportBtn = document.getElementById('report-btn');
+    
+    const viewDashboardBtn = document.getElementById('view-dashboard-btn');
+    const restartSimBtn = document.getElementById('restart-sim-btn');
+    
+    const theftOverlay = document.getElementById('theft-animation-overlay');
+    const stolenEmailEl = document.getElementById('stolen-email');
+    const stolenPasswordEl = document.getElementById('stolen-password');
+
+    const kpiTotal = document.getElementById('kpi-total');
+    const kpiClicked = document.getElementById('kpi-clicked');
+    const kpiCompromised = document.getElementById('kpi-compromised');
+    const kpiReported = document.getElementById('kpi-reported');
+
+    const eventsTableBody = document.getElementById('events-table-body');
+    const compromiseChart = document.getElementById('compromise-chart');
+    const compromiseRateText = document.getElementById('compromise-rate-text');
+
+
+    // --- CORE FUNCTIONS ---
+
+    const showPage = (pageId) => {
+        pages.forEach(page => {
+            page.classList.remove('active');
+        });
+        const activePage = document.getElementById(pageId);
+        if (activePage) {
+            activePage.classList.add('active');
+        }
+    };
+
+    const addCampaignEvent = (email, status, isNew = false) => {
+        const now = new Date();
+        const time = now.toTimeString().split(' ')[0];
+        campaignUsers.unshift({ email, status, time, isNew });
+        updateDashboard();
+    };
+
+    const handlePhishAttempt = () => {
+        const email = phishEmailInput.value || "user@nexus.corp"; // Use default if empty
+        const password = phishPasswordInput.value || "**********";
+        
+        // Show theft animation
+        stolenEmailEl.textContent = email;
+        stolenPasswordEl.textContent = password;
+        theftOverlay.style.display = 'flex';
+
+        setTimeout(() => {
+            theftOverlay.style.display = 'none';
+            addCampaignEvent(email, 'Credentials Submitted', true);
+            showPage('education-page');
+        }, 3000); // Duration of the animation
+    };
+
+    const handleReport = () => {
+        const email = phishEmailInput.value || "vigilant.user@nexus.corp";
+        addCampaignEvent(email, 'Reported Safely', true);
+        alert('Thank you! This page has been reported to the security team.');
+        showPage('dashboard-page');
+    };
+
+    const updateDashboard = () => {
+        const clickedCount = campaignUsers.filter(u => u.status !== 'Reported Safely').length;
+        const compromisedCount = campaignUsers.filter(u => u.status === 'Credentials Submitted').length;
+        const reportedCount = campaignUsers.filter(u => u.status === 'Reported Safely').length;
+        
+        kpiTotal.textContent = TOTAL_USERS;
+        kpiClicked.textContent = clickedCount;
+        kpiCompromised.textContent = compromisedCount;
+        kpiReported.textContent = reportedCount;
+
+        // Update table
+        eventsTableBody.innerHTML = campaignUsers.map(user => {
+            let statusClass = '';
+            if (user.status === 'Credentials Submitted') statusClass = 'text-danger-accent';
+            else if (user.status === 'Clicked Link') statusClass = 'text-warning-accent';
+            else if (user.status === 'Reported Safely') statusClass = 'text-safe-accent';
+
+            return `
+                <tr class="${user.isNew ? 'table-row-new' : ''}">
+                    <td class="p-3">${user.email}</td>
+                    <td class="p-3 font-semibold ${statusClass}">${user.status}</td>
+                    <td class="p-3 font-code text-gray-400">${user.time}</td>
+                </tr>
+            `;
+        }).join('');
+
+        // Update chart
+        const compromiseRate = TOTAL_USERS > 0 ? (compromisedCount / TOTAL_USERS) * 100 : 0;
+        compromiseRateText.textContent = `${compromiseRate.toFixed(0)}%`;
+        compromiseChart.style.background = `
+            radial-gradient(closest-side, var(--panel-bg) 79%, transparent 80% 100%),
+            conic-gradient(var(--danger-accent) ${compromiseRate}%, var(--border-color) 0)
+        `;
+    };
+
+    const initializeSim = () => {
+        campaignUsers = [...demoUsers]; // Reset with demo data
+        phishEmailInput.value = '';
+        phishPasswordInput.value = '';
+        updateDashboard();
+        showPage('phishing-page');
+    };
+
+    // --- EVENT LISTENERS ---
+    phishSubmitBtn.addEventListener('click', handlePhishAttempt);
+    reportBtn.addEventListener('click', handleReport);
+    viewDashboardBtn.addEventListener('click', () => showPage('dashboard-page'));
+    restartSimBtn.addEventListener('click', initializeSim);
+
+    // --- INITIALIZATION ---
+    initializeSim();
+
+});
+</script>
+</body>
+</html>
