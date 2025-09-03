@@ -1,7 +1,3 @@
-Got it! I’ve rewritten your **Phishing Awareness & Detection Platform README** to the same professional, portfolio-ready standard as your other projects — no preview GIF, but full structure, badges, screenshots table, and clean sections.
-
----
-
 # 🎣 Phishing Awareness & Detection Platform
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5\&logoColor=white)
@@ -10,9 +6,9 @@ Got it! I’ve rewritten your **Phishing Awareness & Detection Platform README**
 ![MIT Licence](https://img.shields.io/badge/License-MIT-green.svg)
 ![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)
 
-**Phishing Awareness & Detection Platform** is an **interactive, single-page web application** designed to educate users on phishing attacks by simulating a realistic scenario — from the initial bait through to post-breach analysis.
+**Phishing Awareness & Detection Platform** is an **interactive, single-page web application** that simulates phishing attacks, educates users on red flags, and provides an interactive campaign dashboard.
 
-It provides a **safe, hands-on learning environment** to understand one of the most common cyberattack vectors.
+It is a **safe, hands-on learning environment** to understand phishing attack mechanics and defensive measures.
 
 ---
 
@@ -21,10 +17,10 @@ It provides a **safe, hands-on learning environment** to understand one of the m
 * [Live Demo](#-live-demo)
 * [Screenshots](#-screenshots)
 * [Key Features](#-key-features)
-* [Technology Stack](#-technology-stack)
+* [Project Structure](#-project-structure)
+* [Getting Started](#-getting-started)
+* [Technologies Used](#-technologies-used)
 * [Core Concepts & Skills](#-core-concepts--skills-demonstrated)
-* [How It Works](#-how-it-works)
-* [Local Development](#-local-development)
 * [Future Enhancements](#-future-enhancements)
 * [Licence](#-licence)
 
@@ -32,50 +28,70 @@ It provides a **safe, hands-on learning environment** to understand one of the m
 
 ## 🌐 Live Demo
 
-🔗 **[Try the Live Demo](https://yourusername.github.io/phishing-awareness-platform/)**
+🔗 **[Try the Live Demo](https://sanilpanchal23.github.io/Phishing-Awareness-Detection-Platform/)**
 
 ---
 
 ## 📸 Screenshots
 
-| Stage                                 | Screenshot                                             |
-| ------------------------------------- | ------------------------------------------------------ |
-| 🎣 The Bait – Malicious Login Portal  | ![Login Page](assets/screenshot-login.png)             |
-| 🔓 The Consequence – Credential Theft | ![Credential Theft](assets/screenshot-theft.png)       |
-| 📘 The Lesson – Educational Debrief   | ![Educational Debrief](assets/screenshot-debrief.png)  |
-| 📊 The Analysis – Campaign Dashboard  | ![Campaign Dashboard](assets/screenshot-dashboard.png) |
+| Dashboard Overview                           | Malicious Login Page                       | Credential Theft                                 | Campaign Dashboard                            |
+| -------------------------------------------- | ------------------------------------------ | ------------------------------------------------ | --------------------------------------------- |
+| ![Overview](assets/screenshot-dashboard.png) | ![Login Page](assets/screenshot-login.png) | ![Credential Theft](assets/screenshot-theft.png) | ![Dashboard](assets/screenshot-dashboard.png) |
 
-**Suggested filenames for `assets` folder:**
-
-* `screenshot-login.png`
-* `screenshot-theft.png`
-* `screenshot-debrief.png`
-* `screenshot-dashboard.png`
-
-Project path example:
-
-```
-C:\Users\sanil\Projects\Phishing-Awareness-Platform\assets
-```
-
----
 
 ## ✨ Key Features
 
-* **Realistic Phishing Simulation** – Fake corporate login page with deceptive URL and mimicked browser UI
-* **Immediate Feedback** – Real-time credential exfiltration animation
-* **Educational Debrief** – Explains phishing red flags (spelling errors, URL tricks, urgency)
-* **Campaign Dashboard** – Visualises KPIs (compromise rates, live activity feed)
-* **Fully Self-contained** – Runs entirely in a single static file
+* **🎣 Realistic Phishing Simulation** – Fake corporate login page with deceptive URL and browser UI
+* **🔓 Immediate Feedback** – Real-time credential theft animation
+* **📘 Educational Debrief** – Explains phishing red flags: spelling errors, URL tricks, urgency
+* **📊 Campaign Dashboard** – Visualises KPIs: compromise rates, live activity feed
+* **✅ Fully Self-contained** – Runs entirely in a single static file
 
 ---
 
-## 🛠️ Technology Stack
+## 📂 Project Structure
 
-* **HTML5** – Core structure and content
+```text
+.
+├── index.html        # Main simulation (UI + logic)
+├── tailwind.css      # Styling via CDN
+├── assets/           # Screenshots and UI assets
+│   ├── screenshot-dashboard.png
+│   ├── screenshot-login.png
+│   ├── screenshot-theft.png
+│   ├── screenshot-debrief.png
+└── README.md         # Project documentation
+```
+
+All logic is contained in `index.html`. TailwindCSS and Google Fonts are loaded via CDN.
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/Sanilpanchal23/Phishing-Awareness-Detection-Platform.git
+cd phishing-awareness-platform
+```
+
+### 2. Open in browser
+
+```bash
+index.html
+```
+
+💡 Use a **live server** for best results.
+
+---
+
+## 🛠️ Technologies Used
+
+* **HTML5** – Structure and content
 * **Tailwind CSS** – Utility-first, responsive styling
-* **JavaScript (ES6+)** – Simulation logic, DOM manipulation, state management
-* **Google Fonts & SVG Icons** – Typography and interface visuals
+* **JavaScript (ES6+)** – Simulation logic and state management
+* **Google Fonts & SVG Icons** – Typography and interface elements
 
 ---
 
@@ -83,72 +99,36 @@ C:\Users\sanil\Projects\Phishing-Awareness-Platform\assets
 
 ### 🔐 Cybersecurity Awareness
 
-* **Social Engineering** – Psychological manipulation: urgency, authority, fear
-* **Phishing Analysis** – Spot domain spoofing, spelling errors, deceptive URLs
-* **Threat Visualisation** – Making abstract cyber risks tangible
-* **Security Education** – Strengthen organisational security posture
+* Social Engineering – Urgency, authority, fear manipulation
+* Phishing Analysis – Spotting spoofed domains, spelling errors
+* Threat Visualisation – Making cyber risks tangible
+* Security Education – Improve organisational security posture
 
 ### 🎨 Frontend Development & UX
 
-* **DOM Manipulation** – Seamless navigation without page reloads
-* **State Management** – Track simulation results dynamically
-* **Animations** – Fluid CSS transitions and credential theft visualisation
-* **Responsive Design** – Optimised for desktop, tablet, and mobile
-* **User Journey Mapping** – Logical flow from bait → decision → lesson → dashboard
+* DOM Manipulation – Seamless navigation without reloads
+* State Management – Track user actions dynamically
+* Animations – Smooth CSS transitions and credential theft visualisation
+* Responsive Design – Desktop, tablet, and mobile optimisation
+* User Journey Mapping – Logical flow from bait → decision → lesson → dashboard
 
 ---
 
-## 🔎 How It Works
+## 🌟 Future Enhancements
 
-1. **The Bait** – User sees a fake login page
-2. **The Decision** – User either:
-
-   * Submits credentials → theft animation plays
-   * Reports the page → flagged as safe behaviour
-3. **The Lesson** – Educational breakdown of mistakes or safe actions
-4. **The Analysis** – Dashboard records outcomes and KPIs
-
----
-
-## 💻 Local Development
-
-Clone the repository:
-
-```bash
-git clone https://github.com/your-username/phishing-awareness-platform.git
-cd phishing-awareness-platform
-```
-
-Open the project in your browser:
-
-```bash
-index.html
-```
-
-💡 For best results, use a **live server extension** in your code editor.
-
----
-
-## 🚀 Future Enhancements
-
-* 🔄 **Multiple Campaign Templates** – Parcel delivery, HMRC tax rebate, corporate alerts
-* 🏆 **User Scoring System** – Gamify training with scores & leaderboards
-* ☁️ **Backend Integration** – Persist campaign results with Node.js + PostgreSQL
-* 🎨 **Dark/Light Mode** – Theme toggle for user comfort
-* 📊 **Analytics Enhancements** – More detailed KPIs, charts, and historical trends
+* Multiple Campaign Templates – Parcel delivery, HMRC tax rebate, corporate alerts
+* User Scoring System – Gamified training with scores & leaderboards
+* Backend Integration – Persist results with Node.js + PostgreSQL
+* Dark/Light Mode Toggle – User-friendly theme switching
+* Advanced Analytics – More KPIs, charts, and historical trends
 
 ---
 
 ## 📜 Licence
 
-MIT Licence © 2025 **\[Your Name]**
+MIT Licence © 2025 **\[Sanil Panchal]**
 
 ---
 
 ✨ **Phishing Awareness & Detection Platform – Safe, Interactive, Hands-On Cybersecurity Learning.**
 
----
-
-I can also **prepare a unified “assets/cover.png” banner** for this project so it matches your **Cloud Architect Pro, CTI Dashboard, Azure Intelligent Overview, and SQL Injection Experience** style.
-
-Do you want me to create that banner too?
