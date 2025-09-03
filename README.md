@@ -32,11 +32,12 @@ It is a **safe, hands-on learning environment** to understand phishing attack me
 
 ---
 
+
 ## 📸 Screenshots
 
-| Dashboard Overview                           | Malicious Login Page                       | Credential Theft                                 | Campaign Dashboard                            |
-| -------------------------------------------- | ------------------------------------------ | ------------------------------------------------ | --------------------------------------------- |
-| ![Overview](assets/screenshot-dashboard.png) | ![Login Page](assets/screenshot-login.png) | ![Credential Theft](assets/screenshot-theft.png) | ![Dashboard](assets/screenshot-dashboard.png) |
+| Malicious Login Page                       | Credential Theft                                 | Educational Debrief                                   | Campaign Dashboard                            |
+| ------------------------------------------ | ------------------------------------------------ | ----------------------------------------------------- | --------------------------------------------- |
+| ![Login Page](assets/screenshot-login.png) | ![Credential Theft](assets/screenshot-theft.png) | ![Educational Debrief](assets/screenshot-debrief.png) | ![Dashboard](assets/screenshot-dashboard.png) |
 
 
 ## ✨ Key Features
